@@ -1,14 +1,14 @@
 # Cloud-Native URL Shortener: A DevOps & Kubernetes Showcase
 
-This project is a fully containerized, two-tier URL shortener application designed to be deployed on Kubernetes. It consists of a Python Flask API and a Redis database.
+This project is a fully containerized, two-tier URL shortener application designed as a portfolio piece to demonstrate a complete cloud-native software lifecycle. It consists of a Python Flask API (with a simple HTML frontend), a Redis database, and is configured to run locally using Docker Compose.
 
 ---
 
 ## ## Vision & Purpose
 
-The primary goal of this project is not to build the world's best URL shortener, but to serve as a practical, hands-on learning exercise for mastering the full cloud-native software lifecycle.
+The primary goal of this project is not to build the world's best URL shortener, but to serve as a practical, hands-on learning exercise for mastering modern DevOps practices.
 
-It is a portfolio piece designed to demonstrate core competencies in **DevOps methodologies**, **Kubernetes orchestration**, **containerization**, and **observability**. The "greater vision" is to use this simple application as a foundation to build out a complete, production-grade ecosystem with robust automation and monitoring.
+It is designed to demonstrate core competencies in **containerization (Docker)**, **multi-service orchestration (Docker Compose & Kubernetes)**, and **observability**. The "greater vision" is to use this simple application as a foundation to build out a complete, production-grade ecosystem with robust CI/CD automation and monitoring.
 
 ---
 
@@ -16,64 +16,71 @@ It is a portfolio piece designed to demonstrate core competencies in **DevOps me
 
 The application follows a simple microservice pattern:
 
-* **Frontend/API (`Python/Flask`):** A stateless web service that handles API requests for creating and redirecting URLs.
-* **Database (`Redis`):** A stateful key-value store that persists the mapping between short codes and long URLs.
-
-All communication happens over the internal Kubernetes network.
+* **Application Service (`Python/Flask`):** A container running the web application. It serves a simple HTML frontend and provides a JSON API for creating short URLs.
+* **Database Service (`Redis`):** A container running the Redis key-value store to persist the URL mappings.
 
 
 
 ---
 
-## ## Core Technologies Demonstrated
+## ## Core Technologies
 
 * **Containerization:** Docker & Dockerfile (multi-stage builds)
-* **Orchestration:** Kubernetes
+* **Local Orchestration:** Docker Compose
+* **Orchestration:** Kubernetes (Target Platform)
 * **Application:** Python (Flask)
 * **Database:** Redis
 * **Version Control:** Git & GitHub
-* **Observability:** Prometheus (for metrics) & Grafana (for dashboards)
-* **CI/CD:** GitHub Actions (Future Goal)
+* **Observability:** Prometheus & Grafana (Planned)
+* **CI/CD:** GitHub Actions (Planned)
 
 ---
 
-## ## How to Run Locally
+## ## Getting Started (Recommended Method)
 
-You can test the application on your local machine using Docker.
+The entire application stack can be run locally with a single command using Docker Compose.
 
-**Prerequisites:**
+### Prerequisites
+
 * Docker
-* Python 3.9+
-* An active terminal
+* Docker Compose (usually included with Docker Desktop)
 
-**Steps:**
+### Running the Application
+
 1.  **Clone the repository:**
     ```sh
     git clone <your-repo-url>
     cd <your-repo-name>
     ```
-2.  **Start the Redis container:**
+2.  **Build and start the services:**
     ```sh
-    docker run --name local-redis -d -p 6379:6379 redis
+    docker compose up --build
     ```
-3.  **Install Python dependencies:**
-    ```sh
-    pip install -r requirements.txt
-    ```
-4.  **Run the application:**
-    ```sh
-    python app.py
-    ```
-    The API will be available at `http://127.0.0.1:5000`.
+    This command will build the application image, pull the Redis image, and start both containers in a dedicated network.
+
+3.  **Access the application:**
+    Open your web browser and navigate to `http://localhost:3333`.
 
 ---
 
-## ## Future Goals & Roadmap
+<details>
+<summary><strong>Manual Local Setup (Without Docker)</strong></summary>
 
-This project is the foundation. The next steps are to build out a complete, automated ecosystem around it:
+This method is not recommended for a full setup but can be used for testing the Python script independently.
 
-* [ ] **CI/CD Pipeline:** Implement a full GitHub Actions workflow that automatically builds, tests, and deploys the application to Kubernetes on every commit to the `main` branch.
-* [ ] **Kubernetes Manifests:** Develop robust `Deployment`, `Service`, and `StatefulSet` manifests for the application and database.
+1.  Start a local Redis instance (e.g., `brew install redis` and `redis-server`, or via Docker).
+2.  Install Python dependencies: `pip install -r requirements.txt`.
+3.  Run the application: `python app.py`.
+
+</details>
+
+---
+
+## ## Next Steps & Roadmap
+
+With the application fully containerized and running with Docker Compose, the next phase is to deploy it to a Kubernetes cluster.
+
+* [ ] **Kubernetes Manifests:** Develop robust `Deployment`, `Service`, and `StatefulSet` YAML files.
+* [ ] **CI/CD Pipeline:** Implement a full GitHub Actions workflow that automatically builds and pushes the Docker image to a registry (like Docker Hub or GHCR).
 * [ ] **Full Observability Stack:** Deploy the "PLG" (Prometheus, Loki, Grafana) stack to the cluster to visualize metrics and aggregate logs.
 * [ ] **Infrastructure as Code (IaC):** Use Terraform to provision the underlying Kubernetes cluster itself.
-* [ ] **Distributed Tracing:** Add tools like Jaeger or Tempo to trace requests as they move between the API and the database.
